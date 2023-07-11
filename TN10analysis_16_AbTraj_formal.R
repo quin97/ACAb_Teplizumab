@@ -236,12 +236,9 @@ p$ABSENT+theme(plot.subtitle = element_text(size = 25))
 p$PRESENT+theme(plot.subtitle = element_text(size = 25))
 
 # total Ab over time ------------------------------------------------------
-# setwd("~/Downloads/MBP/TN10/ELISA")
-# change directory for elisa data
-tn10elisa<-read.csv("TN10_withELISA_final.csv",as.is = T)
-tnmerge<-tn10elisa%>%select("Barcode","ID","IgG1_mgml","IgG2_mgml","IgA_mgml")%>%full_join(tn10)
-# tnmerge_ppc<-preProcess(tnmerge%>%select(-MaskID,-Visit,-ID,-T1D.event,-Time.to.T1D,-Sex,-matches("A$",ignore.case = F)),method = c("center", "scale","YeoJohnson"))
-# tnmerge.scaled<- predict(tnmerge_ppc, tnmerge)
+tn10elisa<-read_xlsx("../TN10RIdata/Data file S1.xlsx",sheet = "ELISA")
+tnmerge<-tn10elisa%>%select("Barcode","ID","IgG1_mgml","IgG2_mgml","IgA_mgml")%>%mutate(IgA_mgml = as.numeric(IgA_mgml))%>%full_join(tn10)
+
 summary(tnmerge$IgG1_mgml)
 sd(tnmerge$IgG1_mgml)
 summary(tnmerge$IgG2_mgml)
@@ -250,7 +247,7 @@ summary(tnmerge$IgA_mgml,na.rm = T)
 sd(tnmerge$IgA_mgml,na.rm = T)
 
 elisa.long<-tnmerge%>%select(MaskID,Visit,Treatment.Arm,T1D.event,Time.to.T1D,IgG1_mgml,IgG2_mgml,IgA_mgml)%>%
-  mutate(Visit=factor(Visit))%>%pivot_longer(cols = contains("mgml"),names_to = "Isotype", values_to = "Titre")%>%mutate(Isotype = factor(Isotype, levels = c("IgG1_mgml","IgG2_mgml","IgA_mgml"), labels = c("IgG1","IgG2","IgA")))
+  mutate(Visit=factor(Visit), Treatment.Arm = factor(Treatment.Arm, levels = c("Teplizumab","Placebo")))%>%pivot_longer(cols = contains("mgml"),names_to = "Isotype", values_to = "Titre")%>%mutate(Isotype = factor(Isotype, levels = c("IgG1_mgml","IgG2_mgml","IgA_mgml"), labels = c("IgG1","IgG2","IgA")))
 
 ggplot(elisa.long,aes(x=Isotype,y = Titre, group = interaction(Isotype,Treatment.Arm),color = Isotype))+
   geom_violin(scale = "width",aes(linetype = Treatment.Arm) )+geom_point(aes(fill = Treatment.Arm),position = position_jitterdodge(1),alpha = .75,size = 2)+
