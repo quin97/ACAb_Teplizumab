@@ -121,7 +121,8 @@ acab.toplot%>%split(.$Isotype)%>%imap(~ggplot(.,aes(x =Visit,y = meanRI,linetype
                                          labs(y = paste(.y,"responses [scale:log]"),x="On-Study (Months)",color = "Bacteria")+
                                          # geom_text_repel(aes(label = count,group = Treatment.Arm),hjust =2,vjust=3)+
                                          # scale_color_manual(labels = c(ghibli_palette("MarnieMedium1"),ghibli_palette("MarnieMedium2")[3:7],ghibli_palette("LaputaMedium")[3:7]))+
-                                        scale_color_discrete(labels = c("Anaerotruncus colihominis", "Bifidobacterium animalis","Bifidobacterium bifidum",
+                                        scale_color_manual(values = colorRampPalette(ghibli_palette("MarnieMedium2"))(15),
+                                                           labels = c("Anaerotruncus colihominis", "Bifidobacterium animalis","Bifidobacterium bifidum",
                                                                         "Bacteroides dorei", "Bacteroides fragilis","Bifidobacterium longum",
                                                                         "Bacteroides vulgatus","Coprococcus eutactus","Dialister invisus",
                                                                         "Escherichia coli","Enterococcus faecalis","Lactobacillus acidophilus",
